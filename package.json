@@ -1,7 +1,7 @@
 {
   "name": "react-str",
   "description": "React data fetching hooks using stale-till-revalidate policy.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
   "license": "MIT",
