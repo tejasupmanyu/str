@@ -1,5 +1,5 @@
 {
-  "name": "str",
+  "name": "react-str",
   "description": "React data fetching hooks using stale-till-revalidate policy.",
   "version": "0.0.1",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
     "build:ts": "tsc",
     "build:all": "yarn clean && yarn build:ts && yarn add-assets",
     "clean": "nwb clean-module && nwb clean-demo",
-    "prepublishOnly": "npm run build:all"
+    "prepublishOnly": "yarn build:all"
   },
   "author": "tejasupmanyu",
   "dependencies": {

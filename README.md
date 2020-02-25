@@ -1,6 +1,6 @@
 ## Introduction
 
-STR is a React Hooks library for remote data fetching.
+React-STR is a React Hooks library for remote data fetching.
 
 "STR" stands for `stale-till-revalidate`, where STR returns data from cache (stale), until you revalidate it.
 
