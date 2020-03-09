@@ -11,9 +11,21 @@ export interface ISTROptions {
   revalidateOnReconnect?: () => void;
 }
 
+export type ISTROutput = [
+  (url: string, params?: any) => Promise<void>,
+  {
+    result: any;
+    loading: boolean;
+    error: any;
+    viewCache: any;
+    called: boolean;
+    revalidator: (url?: string | undefined, params?: any) => Promise<void>;
+  }
+];
+
 const noop = () => {};
 
-export const useSTR = (fetcher?: any, options?: ISTROptions) => {
+export const useSTR = (fetcher?: any, options?: ISTROptions): ISTROutput => {
   const [loading, setLoading] = React.useState(false);
   const [result, setResult] = React.useState<any>();
   const [error, setError] = React.useState<any>();
