@@ -14,11 +14,12 @@ export interface ISTROptions {
 const noop = () => {};
 
 export const useSTR = (fetcher?: any, options?: ISTROptions) => {
-  const [isFetching, setIsFetching] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [result, setResult] = React.useState<any>();
   const [error, setError] = React.useState<any>();
   const [fetcherURL, setFetcherURL] = React.useState<string | undefined>();
   const [fetcherParams, setFetcherParams] = React.useState<any>();
+  const [called, setCalled] = React.useState(false);
 
   const onSuccess = options && options.onSuccess ? options.onSuccess : noop;
   const onError = options && options.onError ? options.onError : noop;
@@ -70,8 +71,9 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
   async function lazyFetch(url: string, params?: any) {
     setFetcherURL(url);
     setFetcherParams(params);
+    setCalled(true);
     if (url) {
-      setIsFetching(true);
+      setLoading(true);
       const key = getCacheKey(url, params);
       const errorKey = getErrorCacheKey(key);
       const [staleResults, staleError] = getCacheEntries(key);
@@ -79,15 +81,15 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
       // return stale data.
       if (staleResults) {
         setResult(staleResults);
-        setIsFetching(false);
+        setLoading(false);
       } else if (staleError) {
         setError(staleError);
-        setIsFetching(false);
+        setLoading(false);
       } else {
         try {
           if (options && options.loadingTimeout && options.onLoadingTimeout) {
             setTimeout(() => {
-              if (isFetching) {
+              if (loading) {
                 options.onLoadingTimeout && options.onLoadingTimeout();
               }
             }, options.loadingTimeout);
@@ -96,20 +98,21 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
           setResult(results);
           cacheSet(key, results);
           onSuccess();
-          setIsFetching(false);
+          setLoading(false);
         } catch (err) {
           setError(err);
           cacheSet(errorKey, err);
           onError();
-          setIsFetching(false);
+          setLoading(false);
         }
       }
     }
   }
 
   async function revalidator(url = fetcherURL, params = fetcherParams) {
+    setCalled(true);
     if (url) {
-      setIsFetching(true);
+      setLoading(true);
       const cacheKey = `${url}${hasher(params)}`;
       const errorKey = getErrorCacheKey(cacheKey);
       try {
@@ -117,12 +120,12 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
         setResult(results);
         cacheSet(cacheKey, results);
         onSuccess();
-        setIsFetching(false);
+        setLoading(false);
       } catch (err) {
         setError(err);
         cacheSet(errorKey, err);
         onError();
-        setIsFetching(false);
+        setLoading(false);
       }
     }
   }
@@ -131,5 +134,8 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
     console.log(cacheView());
   }
 
-  return { result, lazyFetch, isFetching, error, revalidator, viewCache };
+  return [
+    lazyFetch,
+    { result, loading, error, revalidator, viewCache, called },
+  ];
 };
