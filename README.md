@@ -18,7 +18,7 @@ With STR, components will get a stream of data updates constantly and automatica
 ## Quick Start
 
 ```jsx
-import useSTR from "str";
+import { useSTR } from "react-str";
 
 const Home: React.FC = () => {
   const getData = async url => {
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
     return response.data;
   };
 
-  const { lazyFetch, result, isFetching, error } = useSTR(getData);
+  const [lazyFetch, {result, loading, error, revalidator} ] = useSTR(getData);
 
   React.useEffect(() => {
     lazyFetch(`https://api/user`);
@@ -51,7 +51,7 @@ or with npm:
 ## API
 
 ```jsx
-const { result, lazyFetch, isFetching, error, revalidator, viewCache } = useSTR(
+const [lazyFetch, {loading, error, result, revalidator, viewCache}] = useSTR(
   fetcherFn,
   options
 );
