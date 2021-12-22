@@ -1,6 +1,6 @@
 import * as React from "react";
 import { hasher } from "./hasher";
-import { cacheGet, cacheSet, cacheView } from "./cache";
+import { cacheGet, cacheSet, cacheView, cacheClear } from "./cache";
 
 export interface ISTROptions {
   shouldRevalidateOnFocus?: boolean;
@@ -131,5 +131,9 @@ export const useSTR = (fetcher?: any, options?: ISTROptions) => {
     console.log(cacheView());
   }
 
-  return { result, lazyFetch, isFetching, error, revalidator, viewCache };
+  function clearCache() {
+    cacheClear()
+  }
+
+  return { result, lazyFetch, isFetching, error, revalidator, viewCache, clearCache };
 };
